@@ -1,0 +1,9 @@
+# Deploy no Netlify via integração com o GitHub (Next.js Runtime / OpenNext).
+# O Netlify detecta o Next.js e instala @netlify/plugin-nextjs automaticamente.
+[build]
+  command = "npx prisma migrate deploy && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"

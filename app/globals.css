@@ -1,0 +1,267 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Tokens de tema (claro / escuro)
+   ========================================================================== */
+@layer base {
+  :root {
+    color-scheme: light;
+    --ink: 17 17 17;          /* #111111 */
+    --paper: 250 249 246;     /* #FAF9F6 */
+    --stone2: 232 230 225;    /* #E8E6E1 */
+
+    --background: 45 29% 97%;
+    --foreground: 0 0% 7%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 7%;
+    --primary: 0 0% 7%;
+    --primary-foreground: 45 29% 97%;
+    --accent: 18 100% 50%;    /* #FF4D00 */
+    --accent-foreground: 0 0% 100%;
+    --muted: 43 11% 90%;
+    --muted-foreground: 0 0% 38%;
+    --border: 43 11% 88%;
+    --input: 43 11% 85%;
+    --ring: 18 100% 50%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --radius: 0.375rem;
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --scroll: 0;
+    --spot: 255 77 0;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --ink: 242 240 235;       /* texto claro quente */
+    --paper: 12 12 11;        /* fundo quase preto */
+    --stone2: 42 41 38;
+
+    --background: 60 4% 5%;
+    --foreground: 45 20% 93%;
+    --card: 60 3% 8.5%;
+    --card-foreground: 45 20% 93%;
+    --popover: 60 3% 9%;
+    --popover-foreground: 45 20% 93%;
+    --primary: 45 20% 93%;
+    --primary-foreground: 60 4% 5%;
+    --muted: 45 5% 16%;
+    --muted-foreground: 45 4% 64%;
+    --border: 45 5% 17%;
+    --input: 45 4% 24%;
+    --destructive: 0 72% 55%;
+  }
+
+  * { @apply border-border; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { @apply bg-background text-foreground font-sans transition-colors duration-300; }
+  h1, h2, h3, h4 { @apply font-display tracking-tight; }
+  ::selection { background: #FF4D00; color: #fff; }
+  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+
+/* ==========================================================================
+   Troca de tema com revelação circular (View Transitions API)
+   ========================================================================== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  animation: theme-reveal 0.6s var(--ease) both;
+}
+@keyframes theme-reveal {
+  from { clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 0%)); }
+  to { clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 0%)); }
+}
+
+/* ==========================================================================
+   Efeitos (lib/effects.ts) — inspirados no portfólio
+   ========================================================================== */
+
+/* Barra de progresso de rolagem */
+.scroll-progress {
+  transform-origin: 0 50%;
+  transform: scaleX(var(--scroll));
+}
+
+/* Scroll reveal: só esconde quando o JS de efeitos está ativo (html.fx) */
+.fx [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  filter: blur(6px);
+  transition: opacity 0.9s var(--ease), transform 1s var(--ease), filter 0.9s var(--ease);
+  transition-delay: var(--delay, 0ms);
+}
+.fx [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Títulos que se montam palavra por palavra */
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.split-word-inner { display: inline-block; }
+.fx .split-word-inner {
+  transform: translate3d(0, 110%, 0) rotate(6deg);
+  transform-origin: 0 100%;
+  transition: transform 1s cubic-bezier(0.2, 0.9, 0.2, 1);
+  transition-delay: calc(var(--i) * 70ms + 100ms);
+}
+.fx .is-visible .split-word-inner { transform: none; }
+.fx [data-reveal].reveal-words { transform: none; filter: none; }
+
+/* Letras do hero sobem uma a uma */
+.split-char {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  animation: char-rise 1s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: calc(0.1s + var(--i) * 38ms);
+}
+@keyframes char-rise {
+  0% { opacity: 0; transform: translate3d(0, 0.6em, 0) rotateX(-95deg) scale(0.8); filter: blur(10px); }
+  70% { filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* Brilho que segue o cursor ([data-spotlight]) */
+[data-spotlight] { position: relative; }
+[data-spotlight]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgb(var(--spot) / 0.14), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  pointer-events: none;
+  z-index: 1;
+}
+[data-spotlight]:hover::after { opacity: 1; }
+
+/* Inclinação 3D e magnético */
+[data-tilt] {
+  /* sem preserve-3d: mantém a ordem de empilhamento (z-index) dos filhos */
+  transition: transform 0.6s var(--ease);
+  will-change: transform;
+}
+[data-magnetic] { transition: transform 0.35s var(--ease); }
+
+/* Borda luminosa girando (cards em destaque / botões) */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--angle), #FF4D00, #FFB088, #FF4D00 40%, transparent 60%, #FF4D00);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  animation: spin-angle 4s linear infinite paused;
+  pointer-events: none;
+  z-index: 2;
+}
+.glow-border:hover::before,
+.glow-border-on::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+@keyframes spin-angle { to { --angle: 360deg; } }
+
+/* Hero: Ken Burns + brasas */
+.hero-kenburns {
+  animation: kenburns 26s ease-in-out infinite alternate;
+  transform-origin: 60% 40%;
+  will-change: transform;
+}
+@keyframes kenburns {
+  from { transform: scale(1.02) translate3d(0, 0, 0); }
+  to { transform: scale(1.14) translate3d(-2%, -1.5%, 0); }
+}
+.hero-ember {
+  background: rgb(255 77 0);
+  box-shadow: 0 0 6px rgb(255 77 0), 0 0 14px rgb(255 120 40 / 0.6);
+  opacity: 0;
+  animation-name: ember;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes ember {
+  0% { transform: translate3d(0, 0, 0) scale(0.6); opacity: 0; }
+  10% { opacity: 0.85; }
+  80% { opacity: 0.4; }
+  100% { transform: translate3d(var(--drift), -100vh, 0) scale(1.1); opacity: 0; }
+}
+
+/* Faixas cinéticas */
+.kinetic-row { animation: marquee 34s linear infinite; }
+.kinetic-row.reverse { animation-direction: reverse; animation-duration: 42s; }
+.kinetic-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(var(--ink) / 0.35);
+  transition: color 0.4s, -webkit-text-stroke-color 0.4s;
+}
+.kinetic-outline:hover { color: #FF4D00; -webkit-text-stroke-color: transparent; }
+
+/* Skeleton com brilho */
+.skeleton-shine { position: relative; overflow: hidden; }
+.skeleton-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(var(--paper) / 0.55) 50%, transparent 70%);
+  background-size: 250% 100%;
+  animation: skeleton 1.8s ease-in-out infinite;
+}
+@keyframes skeleton {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+
+/* Item que voa até o carrinho */
+.fly-to-cart {
+  position: fixed;
+  z-index: 100;
+  pointer-events: none;
+  border-radius: 9999px;
+  object-fit: cover;
+  box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.5);
+}
+
+/* Pulso no ícone do carrinho */
+.cart-bump { animation: cart-bump 0.5s var(--ease); }
+@keyframes cart-bump {
+  30% { transform: scale(1.3) rotate(-8deg); }
+  60% { transform: scale(0.92) rotate(4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .fx [data-reveal], .fx .split-word-inner { opacity: 1; transform: none; filter: none; }
+}
