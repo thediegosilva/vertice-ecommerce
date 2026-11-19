@@ -11,11 +11,11 @@ import { ipFromHeaders, rateLimit } from "@/lib/rate-limit";
 import { openSecret, verifyTotp } from "@/lib/totp";
 import { logger } from "@/lib/logger";
 import { mergeGuestCartOnLogin } from "@/lib/cart";
+import { authConfig } from "./auth.config";
 
 export const MAX_FAILED_ATTEMPTS = 5;
 export const LOCKOUT_MINUTES = 15;
 const ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000; // "access" de 15 minutos
-const REFRESH_TTL_SEC = 7 * 24 * 60 * 60; // sessão (refresh) de 7 dias
 
 class InvalidCredentials extends CredentialsSignin {
   code = "invalid";
@@ -101,13 +101,11 @@ if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
 export const googleEnabled = !!(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt", maxAge: REFRESH_TTL_SEC },
-  // Cookies: httpOnly + SameSite=Lax + Secure (prefixo __Secure- em HTTPS) — padrão do Auth.js
-  trustHost: true,
-  pages: { signIn: "/login", error: "/login" },
   providers,
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user }) {
       if (user) {
         // Login inicial
@@ -136,17 +134,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.accessExp = Date.now() + ACCESS_TOKEN_TTL_MS;
       }
       return token;
-    },
-    async session({ session, token }) {
-      if (token.sub) session.user.id = token.sub;
-      session.user.role = (token.role as "USER" | "ADMIN") ?? "USER";
-      return session;
-    },
-    authorized({ auth, request }) {
-      const path = request.nextUrl.pathname;
-      if (path.startsWith("/admin")) return auth?.user?.role === "ADMIN";
-      if (path.startsWith("/conta") || path.startsWith("/checkout")) return !!auth?.user;
-      return true;
     },
   },
   events: {

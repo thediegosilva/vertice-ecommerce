@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/auth.config";
 import { ipFromHeaders, rateLimit } from "@/lib/rate-limit";
+
+// Instância leve (Edge-safe): só lê o JWT. Sem Prisma/Argon2 no middleware.
+const { auth } = NextAuth(authConfig);
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -71,7 +75,7 @@ export default auth(async (req) => {
   }
 
   // 5) CSP com nonce por requisição
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const nonce = btoa(crypto.randomUUID());
   const csp = buildCsp(nonce);
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-nonce", nonce);
@@ -82,7 +86,6 @@ export default auth(async (req) => {
 });
 
 export const config = {
-  runtime: "nodejs",
   matcher: [
     {
       source: "/((?!_next/static|_next/image|favicon.ico|icon.svg|robots.txt|sitemap.xml|.*\\.(?:png|jpg|jpeg|svg|webp|avif|ico)$).*)",

@@ -1,6 +1,5 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { headers } from "next/headers";
 
 type Rule = { limit: number; windowSec: number };
 
@@ -65,6 +64,8 @@ export function ipFromHeaders(h: Headers) {
 }
 
 export async function clientIp() {
+  // import dinâmico: este módulo também roda no middleware (Edge), onde não usamos next/headers
+  const { headers } = await import("next/headers");
   return ipFromHeaders(await headers());
 }
 
