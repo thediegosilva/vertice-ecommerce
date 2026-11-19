@@ -29,7 +29,7 @@ export function Hero() {
           </span>
           <span data-scramble="200">Coleção Outono/Inverno 26</span>
         </motion.p>
-        <h1 id="hero-title" aria-label={`${LINE1} ${LINE2}`} className="font-display text-[13vw] font-black uppercase leading-[0.86] tracking-[-0.03em] text-white md:text-[8.5vw] xl:text-[132px]">
+        <h1 id="hero-title" aria-label={`${LINE1} ${LINE2}`} className="font-display text-[13vw] font-black uppercase leading-[0.86] tracking-[-0.03em] text-white md:text-[min(120px,calc((100vw_-_4.5rem)/11))]">
           <span className="block pb-1" aria-hidden><SplitChars text={LINE1} /></span>
           <span className="block pb-1 text-flame" aria-hidden><SplitChars text={LINE2} offset={LINE1.length} /></span>
         </h1>

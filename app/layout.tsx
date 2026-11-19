@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { Inter, Archivo } from "next/font/google";
+import localFont from "next/font/local";
 import { headers } from "next/headers";
 import { auth } from "@/auth";
 import { Providers } from "@/components/providers";
@@ -12,8 +12,20 @@ import { Effects } from "@/components/effects";
 import { themeScript } from "@/lib/theme-script";
 import "./globals.css";
 
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const display = Archivo({ subsets: ["latin"], variable: "--font-display", weight: ["600", "700", "800", "900"], display: "swap" });
+// Fontes auto-hospedadas (pacotes @fontsource-variable): o build não depende do Google Fonts
+// e o visitante não faz requisições a servidores externos. O subset "latin" cobre o português.
+const sans = localFont({
+  src: "../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
+  variable: "--font-sans",
+  weight: "100 900",
+  display: "swap",
+});
+const display = localFont({
+  src: "../node_modules/@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2",
+  variable: "--font-display",
+  weight: "100 900",
+  display: "swap",
+});
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 

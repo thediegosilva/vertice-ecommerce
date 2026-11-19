@@ -68,7 +68,7 @@ export default async function HomePage() {
           <div className="relative min-h-[420px] overflow-hidden lg:min-h-[680px]">
             <Image data-parallax="0.06" src={u("1488161628813-04466f872be2", 1600)} alt="Editorial VÉRTICE: modelo sentado em moldura circular com vista para a cidade" fill sizes="(min-width:1024px) 50vw, 100vw" className="scale-110 object-cover" />
           </div>
-          <Reveal className="reveal-words flex flex-col justify-center gap-8 px-6 py-16 md:px-16 lg:py-24">
+          <Reveal className="reveal-words flex min-w-0 flex-col justify-center gap-8 px-6 py-16 md:px-16 lg:py-24">
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-flame" data-scramble="">Editorial · Lookbook 26</p>
             <h2 id="editorial-title" className="font-display text-4xl font-black uppercase leading-[0.95] md:text-6xl">
               <SplitWords text="Feito para quem não para." accent="para." />
@@ -84,7 +84,7 @@ export default async function HomePage() {
                 </div>
               ))}
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <Button asChild variant="accent" size="lg"><Link href="/lookbook" data-magnetic="0.25">Ver Lookbook</Link></Button>
               <Button asChild variant="outline-light" size="lg"><Link href="/shop?category=vestuario" data-magnetic="0.25">Comprar vestuário</Link></Button>
             </div>

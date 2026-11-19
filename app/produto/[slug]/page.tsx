@@ -74,8 +74,10 @@ export default async function ProductPage({ params }: Props) {
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
-        <Gallery images={product.images} name={product.name} />
-        <div className="lg:sticky lg:top-28 lg:self-start">
+        <div className="min-w-0">
+          <Gallery images={product.images} name={product.name} />
+        </div>
+        <div className="min-w-0 lg:sticky lg:top-28 lg:self-start">
           <div className="flex gap-2">
             {product.badge && <Badge>{product.badge}</Badge>}
             <Badge variant="outline">{product.category.name}</Badge>

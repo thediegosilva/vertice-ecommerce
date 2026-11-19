@@ -112,7 +112,7 @@ export function ProductPurchase({ product, compact = false, onAdded }: { product
         <p className={cn("mb-2 text-xs font-semibold", product.stock > 0 && product.stock <= 10 ? "text-flame" : "text-muted-foreground")}>
           {soldOut ? "Esgotado" : product.stock <= 10 ? `Últimas ${product.stock} unidades!` : "Em estoque"}
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <div className="flex items-center rounded-md border bg-card">
             <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Diminuir quantidade" className="p-3 hover:bg-stone2">
               <Minus className="size-4" />
@@ -122,7 +122,7 @@ export function ProductPurchase({ product, compact = false, onAdded }: { product
               <Plus className="size-4" />
             </button>
           </div>
-          <Button size="lg" variant="accent" className="relative flex-1 overflow-hidden" data-magnetic="0.12" onClick={handleAdd} disabled={busy || soldOut} data-testid="add-to-cart">
+          <Button size="lg" variant="accent" className="relative order-last min-w-[12rem] flex-1 basis-full overflow-hidden sm:order-none sm:basis-0" data-magnetic="0.12" onClick={handleAdd} disabled={busy || soldOut} data-testid="add-to-cart">
             {soldOut ? "Esgotado" : busy ? "Adicionando…" : "Adicionar ao carrinho"}
           </Button>
           <Button size="lg" variant="outline" className="px-4" aria-label={saved ? "Remover dos favoritos" : "Salvar nos favoritos"} aria-pressed={saved} onClick={() => toggle(product.id)}>

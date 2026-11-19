@@ -106,7 +106,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       }}
       aria-label={`${LABEL[theme]} — mudar para ${LABEL[next].toLowerCase()}`}
       title={LABEL[theme]}
-      className={`group rounded-md p-2.5 hover:bg-stone2 ${className}`}
+      className={`group rounded-md p-2 hover:bg-stone2 sm:p-2.5 ${className}`}
       data-testid="theme-toggle"
     >
       <Icon className="size-5 transition-transform duration-500 group-hover:rotate-[20deg]" />

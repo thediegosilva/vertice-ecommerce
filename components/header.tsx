@@ -149,7 +149,7 @@ export function Header({ user }: { user: HeaderUser }) {
         </div>
         <Logo />
         <nav aria-label="Principal" className="hidden lg:block">
-          <ul className="flex items-center gap-7 text-[13px] font-semibold uppercase tracking-wider">
+          <ul className="flex items-center gap-4 text-[12px] font-semibold uppercase tracking-wider xl:gap-7 xl:text-[13px]">
             {NAV.map((n) => (
               <li key={n.href}>
                 <Link href={n.href} aria-current={activeHref === n.href ? "page" : undefined} className={cn("relative py-2 transition-colors hover:text-flame", activeHref === n.href && "text-flame")}>
@@ -163,10 +163,10 @@ export function Header({ user }: { user: HeaderUser }) {
           </ul>
         </nav>
         <div className="flex items-center gap-0.5">
-          <button onClick={() => setSearchOpen((v) => !v)} aria-label="Buscar" aria-expanded={searchOpen} className="rounded-md p-2.5 hover:bg-stone2">
+          <button onClick={() => setSearchOpen((v) => !v)} aria-label="Buscar" aria-expanded={searchOpen} className="rounded-md p-2 hover:bg-stone2 sm:p-2.5">
             <Search className="size-5" />
           </button>
-          <Link href={user ? "/conta/favoritos" : "/favoritos"} aria-label={`Favoritos (${ids.size})`} className="relative hidden rounded-md p-2.5 hover:bg-stone2 sm:block">
+          <Link href={user ? "/conta/favoritos" : "/favoritos"} aria-label={`Favoritos (${ids.size})`} className="relative hidden rounded-md p-2 hover:bg-stone2 sm:p-2.5 sm:block">
             <Heart className="size-5" />
             {ids.size > 0 && <span className="absolute right-1 top-1 size-2 rounded-full bg-flame" aria-hidden />}
           </Link>
@@ -210,11 +210,11 @@ export function Header({ user }: { user: HeaderUser }) {
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
           ) : (
-            <Link href="/login" aria-label="Entrar" className="rounded-md p-2.5 hover:bg-stone2">
+            <Link href="/login" aria-label="Entrar" className="rounded-md p-2 hover:bg-stone2 sm:p-2.5">
               <User className="size-5" />
             </Link>
           )}
-          <button onClick={() => setOpen(true)} aria-label={`Abrir carrinho (${count} itens)`} className="relative rounded-md p-2.5 hover:bg-stone2" data-testid="cart-button" data-cart-target>
+          <button onClick={() => setOpen(true)} aria-label={`Abrir carrinho (${count} itens)`} className="relative rounded-md p-2 hover:bg-stone2 sm:p-2.5" data-testid="cart-button" data-cart-target>
             <ShoppingBag className="size-5" />
             <AnimatePresence>
               {count > 0 && (
