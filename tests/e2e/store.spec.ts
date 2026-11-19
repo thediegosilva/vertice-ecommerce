@@ -53,8 +53,8 @@ test("modo escuro: alterna, aplica e persiste após recarregar", async ({ page }
   await page.getByTestId("theme-toggle").click(); // sistema → claro
   await page.getByTestId("theme-toggle").click(); // claro → escuro
   await expect(html).toHaveClass(/\bdark\b/);
-  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  expect(bg).toBe("rgb(13, 13, 12)");
+  // o body tem transição de cor: espera o valor final
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(13, 13, 12)");
   await page.reload();
   await expect(html).toHaveClass(/\bdark\b/);
 });
