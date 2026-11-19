@@ -30,6 +30,8 @@ export async function placeOrderAction(input: unknown): Promise<ActionResult<{ u
   return runAction("place_order", async () => {
     const sessionUser = await requireUser();
     await enforceRateLimit("checkout", sessionUser.id);
+    // Verifica ANTES de criar o pedido: sem meio de pagamento, nada é reservado
+    if (!stripe && !mockPaymentsEnabled) throw new UserError("Pagamentos indisponíveis no momento. Tente novamente mais tarde.");
     const data = checkoutSchema.parse(input);
     const user = await db.user.findUniqueOrThrow({ where: { id: sessionUser.id }, select: { id: true, email: true } });
 
@@ -89,7 +91,6 @@ export async function placeOrderAction(input: unknown): Promise<ActionResult<{ u
       }
     }
 
-    if (!mockPaymentsEnabled) throw new UserError("Pagamentos indisponíveis no momento.");
     // Modo desenvolvimento sem Stripe: página de pagamento simulado
     return { url: `/checkout/simulado?pedido=${encodeURIComponent(order.number)}` };
   });
